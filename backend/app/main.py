@@ -6,7 +6,7 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],  # Porta do Vite
+    allow_origins=["http://localhost:5173"],  # Vite port
     allow_methods=["*"],
     allow_headers=["*"],
 )
