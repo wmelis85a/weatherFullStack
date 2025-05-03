@@ -20,7 +20,7 @@ class EmailRequest(BaseModel):
 
 async def sendEmail(emailRequest):
     try:
-        # Monta o e-mail
+        # Mounts the email
         msg = MIMEMultipart("alternative")
         msg["From"] = SENDER_EMAIL
         msg["To"] = emailRequest.to
@@ -30,7 +30,7 @@ async def sendEmail(emailRequest):
         if emailRequest.html:
             msg.attach(MIMEText(emailRequest.html, "html"))
 
-        # Envia com aiosmtplib
+        # sends with aiosmtplib
         smtp = SMTP(hostname=SMTP_SERVER, port=SMTP_PORT, start_tls=True)
         await smtp.connect()
         await smtp.login(SMTP_USERNAME, SMTP_PASSWORD)
