@@ -7,6 +7,7 @@ router = APIRouter()
 async def get_forecast():
     try:
         data = await getHomeForecast()
+        print(data)
         return data
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
