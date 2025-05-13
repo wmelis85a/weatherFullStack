@@ -1,0 +1,26 @@
+export const WEATHER_CODE_MAP = {
+    "ec": "Encoberto com chuvas isoladas",
+    "ci": "Chuvas Isoladas",
+    "c": "Chuva",
+    "in": "Instável",
+    "pp": "Possibilidade de chuva",
+    "cm": "Chuva pela Manhã",
+    "cn": "Chuva à Noite",
+    "pt": "Pancadas de Chuva à Tarde",
+    "pm": "Pancadas de Chuva pela Manhã",
+    "np": "Nublado e Pancadas de Chuva",
+    "pc": "Pancadas de Chuva",
+    "pn": "Parcialmente Nublado",
+    "cv": "Chuvisco",
+    "ch": "Chuvoso",
+    "t": "Tempestade",
+    "ps": "Predomínio de Sol",
+    "e": "Encoberto",
+    "n": "Nublado",
+    "cl": "Céu Claro",
+    "nv": "Nevoeiro",
+    "g": "Geada",
+    "ne": "Neve",
+    "nd": "Não Definido"
+  };
+  
