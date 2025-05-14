@@ -8,7 +8,7 @@ app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:5173",    
-                "https://weatherfullstack-front.onrender.com"]
+                    "https://weatherfullstack-front.onrender.com"],
     allow_methods=["*"],
     allow_headers=["*"],
 )
