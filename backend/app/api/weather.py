@@ -5,6 +5,10 @@ from app.services.emailer import EmailRequest, sendEmail
 
 router = APIRouter()
 
+@router.get("/health", tags=["Health Check"])
+async def healthCheck():
+    return {"status": "ok"}
+
 @router.get("/getHomeForecast")
 async def get_forecast():
     try:
