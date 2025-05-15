@@ -1,12 +1,16 @@
 from fastapi import APIRouter, Body, Query, HTTPException
 from app.services.weather_service import getHomeForecast
 from app.services.emailer import EmailRequest, sendEmail
+import logging
+
+logger = logging.getLogger("uvicorn.error")
 
 
 router = APIRouter()
 
 @router.get("/getHomeForecast")
 async def get_forecast():
+    logger.info("Fetching home forecast info ")
     try:
         data = await getHomeForecast()
         return data
