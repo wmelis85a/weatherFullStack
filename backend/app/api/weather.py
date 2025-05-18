@@ -8,6 +8,10 @@ logger = logging.getLogger("uvicorn.error")
 
 router = APIRouter()
 
+@router.get("/health", tags=["Health Check"])
+async def healthCheck():
+    return {"status": "ok"}
+
 @router.get("/getHomeForecast")
 async def get_forecast():
     logger.info("Fetching home forecast info ")
