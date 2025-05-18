@@ -13,22 +13,15 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="overflow-x-auto">
-      <table className="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
-        <thead className="bg-gray-200">
-          <tr>
-            <th className="px-4 py-2 text-left">Dia</th>
-            <th className="px-4 py-2 text-left">Tempo</th>
-            <th className="px-4 py-2 text-left">Máxima</th>
-            <th className="px-4 py-2 text-left">Mínima</th>
-          </tr>
-        </thead>
-        <tbody>
-          {forecast.map((dia) => (
-            <ForecastCard key={dia.dia} {...dia} />
-          ))}
-        </tbody>
-      </table>
+  <div className="min-h-screen bg-gray-900 text-white px-4 py-6">
+    <h2 className="text-2xl font-bold text-center mb-2">Hometown forecast - 4 Days</h2>
+    <p className="text-center text-gray-400 mb-8">Nilópolis - RJ</p>
+
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+      {forecast.map((dia) => (
+        <ForecastCard key={dia.dia} {...dia} />
+      ))}
     </div>
-  );
+  </div>
+);
 }

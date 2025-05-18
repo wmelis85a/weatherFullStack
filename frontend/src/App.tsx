@@ -3,12 +3,8 @@ import Footer from "./components/Footer";
 
 function App() {
   return (
-    <div className="min-h-screen bg-gray-100 text-gray-800 p-6">
-      <header className="mb-8 text-center">
-        <h1 className="text-3xl font-bold">Hometown forecast. Next 4 days</h1>
-        <p className="text-sm text-gray-600">Weather api data</p>
-      </header>
-      <main>
+    <div className="min-h-screen bg-gray-100 text-gray-800">
+      <main className="w-full max-w-none px-4 py-6"> {/* Removendo limitação de largura */}
         <Home />
         <br></br>
         <Footer />

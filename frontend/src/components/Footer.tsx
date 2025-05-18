@@ -1,7 +1,14 @@
+import '../styles/Footer.css'; // Importando o CSS
+
 export default function Footer() {
     return(
        <div>
-        <footer>Data retrieved from CPTEC/INPE. Visit: https://www.cptec.inpe.br/</footer>
+        <footer className='footer'>
+        Data retrieved from CPTEC/INPE. Visit: 
+        <a href="https://www.cptec.inpe.br/" target="_blank" rel="noopener noreferrer">
+        https://www.cptec.inpe.br/
+        </a>
+        </footer>
        </div> 
     );
 }

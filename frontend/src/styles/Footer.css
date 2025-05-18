@@ -1,0 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.footer {
+    background-color: #222;           /* Cor de fundo escura */
+    color: #f1f1f1;                   /* Texto claro */
+    text-align: center;               /* Centraliza o texto */
+    padding: 1rem;                    /* Espaçamento interno */
+    font-size: 0.9rem;                /* Fonte menor */
+    position: fixed;                 /* Fixa no rodapé */
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
+  }
+  
+  .footer a {
+    color: #4da6ff;                  /* Cor do link */
+    margin-left: 0.3rem;
+    text-decoration: underline;
+  }
+  
+  .footer a:hover {
+    color: #99ccff;                  /* Cor ao passar o mouse */
+  }
+  
