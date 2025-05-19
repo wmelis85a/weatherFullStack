@@ -1,12 +1,13 @@
+import axios from "axios";
 import { PrevisaoResponse } from "../types/weather";
 
 const VITE_API_URL = import.meta.env.VITE_API_URL;
 
 export async function getHomeForecast(): Promise<PrevisaoResponse> {
-  const res = await fetch(`${VITE_API_URL}`);
-  if (!res.ok) {
+  try {
+    const response = await axios.get<PrevisaoResponse>(`${VITE_API_URL}`);
+    return response.data;
+  } catch (error) {
     throw new Error("Error fetching home forecast");
   }
-  const data = await res.json();
-  return data as PrevisaoResponse;
 }

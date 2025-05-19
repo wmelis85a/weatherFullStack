@@ -5,12 +5,34 @@ import ForecastCard from "../components/ForecastCard";
 
 export default function Home() {
   const [forecast, setForecast] = useState<DiaPrevisao[]>([]);
+  const [load, setload] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    getHomeForecast().then((data) => {
-      setForecast(data.cidade.previsao);
-    });
+    async function fetchData(){
+      setload(true);
+      setError(null);
+
+      try{
+        const data = await getHomeForecast();
+        setForecast(data.cidade.previsao);
+      } catch (err: any) {
+        setError("Error loading from api");
+      } finally {
+        setload(false);
+      }
+    }
+    fetchData();
   }, []);
+
+  if (load) {
+    return <p>Carregando previsão...</p>;
+  }
+
+
+  if (error) {
+    return <p>{error}</p>;
+  }
 
   return (
   <div className="min-h-screen bg-gray-900 text-white px-4 py-6">
