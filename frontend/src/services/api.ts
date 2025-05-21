@@ -13,8 +13,10 @@ axiosRetry(api, {
   retries: 3, // Number of attempts
   retryDelay: axiosRetry.exponentialDelay, // Exponential backoff
   retryCondition: (error) => {
-    // Retry on network errors or 5xx responses
-    return axiosRetry.isNetworkOrIdempotentRequestError(error) || error.response?.status >= 500;
+  return (
+    axiosRetry.isNetworkOrIdempotentRequestError(error) ||
+    (typeof error.response?.status === 'number' && error.response.status >= 500)
+    );
   }
 });
 
