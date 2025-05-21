@@ -10,7 +10,7 @@ router = APIRouter()
 
 @router.get("/health", tags=["Health Check"])
 async def healthCheck():
-    logger.log("Hello from keepalive endpoint")
+    logger.info("Hello from keepalive endpoint")
     return {"status": "ok"}
 
 @router.get("/getHomeForecast")
