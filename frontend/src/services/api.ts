@@ -1,8 +1,10 @@
 import axios from "axios";
 import axiosRetry from 'axios-retry';
 import { PrevisaoResponse } from "../types/weather";
+import { DetailedConditionsResponse } from "../types/weather";
 
 const VITE_API_URL = import.meta.env.VITE_API_URL;
+const VITE_API_CONDITIONS_URL = import.meta.env.VITE_API_CONDITIONS_URL;
 
 const api = axios.create({
   baseURL: `${VITE_API_URL}`,
@@ -28,3 +30,12 @@ export async function getHomeForecast(): Promise<PrevisaoResponse> {
     throw new Error("Error fetching home forecast");
   }
 }
+export async function getDetailedConditions(): Promise<DetailedConditionsResponse> {
+  try {
+    const response = await api.get<DetailedConditionsResponse>(`${VITE_API_CONDITIONS_URL}`);
+    return response.data;
+  } catch (error) {
+    throw new Error("Error fetching detailed conditions");
+  }
+}
+
