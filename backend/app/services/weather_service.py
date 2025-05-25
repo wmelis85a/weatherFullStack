@@ -1,10 +1,12 @@
 import httpx
 import xmltodict
-from app.config import HOME_FORECAST_API
+from app.config import HOME_FORECAST_API , WEATHER_API_KEY
 from app.services.translator import translate_dict_values, translation_map
 import logging
 import time
 from tenacity import retry, stop_after_attempt, wait_exponential
+
+from app.helpers.dict import conditions_filtered
 
 
 
@@ -26,7 +28,7 @@ async def getHomeForecast() -> dict:
 
         response.raise_for_status()
 
-
+    # xml to dict parsing logic
     parse_start = time.perf_counter()
     xml_data = response.text
     dict = xmltodict.parse(xml_data)
@@ -43,3 +45,19 @@ async def getHomeForecast() -> dict:
     logger.info(f"Total processing time: {total_duration:.4f} seconds")
     
     return resp
+
+
+@retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=2, max=10), reraise=True)
+async def getDetailedConditions(): 
+
+    baseUrl ="https://api.weatherapi.com/v1"
+    url = f"{baseUrl}/current.json?key={WEATHER_API_KEY}&q=nilopolis&aqi=no"
+    logger.debug(f"Fetching data from {url}...")
+
+    async with httpx.AsyncClient() as client:
+        response = await client.get(url)
+        response.raise_for_status()
+
+    
+    filtered = conditions_filtered(response.json())
+    return filtered

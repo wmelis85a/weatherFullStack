@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Body, Query, HTTPException
-from app.services.weather_service import getHomeForecast
+from app.services.weather_service import getDetailedConditions, getHomeForecast
 from app.services.emailer import EmailRequest, sendEmail
 import logging
 
@@ -21,6 +21,16 @@ async def get_forecast():
         return data
     except Exception as e:
         logger.error("Unable to reach for INPE api", e)
+        raise HTTPException(status_code=500, detail=str(e))
+    
+@router.get("/getdetailed")
+async def get_forecast():
+    logger.info("Fetching home detailed conditions ")
+    try:
+        data = await getDetailedConditions()
+        return data
+    except Exception as e:
+        logger.error("Unable to reach Weather Api", e)
         raise HTTPException(status_code=500, detail=str(e))
     
 @router.post("/send-email/",
