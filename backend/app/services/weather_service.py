@@ -58,6 +58,5 @@ async def getDetailedConditions():
         response = await client.get(url)
         response.raise_for_status()
 
-    
     filtered = conditions_filtered(response.json())
     return filtered

@@ -10,5 +10,8 @@ def conditions_filtered(data: dict) -> dict:
         "wind_kph": data["current"]["wind_kph"],
         "feelslike_c": data["current"]["feelslike_c"],
         "uv": data["current"]["uv"],
+        "Updated": data["current"]["last_updated"],
+        "Pressure milibars": data["current"]["pressure_mb"],
+
         }
 
