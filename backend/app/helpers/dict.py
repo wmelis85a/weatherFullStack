@@ -1,6 +1,7 @@
 def conditions_filtered(data: dict) -> dict:
     return {
         "city": data["location"]["name"],
+        "localtime": data["location"]["localtime"], 
         "region": data["location"]["region"],
         "country": data["location"]["country"],
         "temperature_c": data["current"]["temp_c"],
