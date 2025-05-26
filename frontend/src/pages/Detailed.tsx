@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { getDetailedConditions } from "../services/api";
 import { DetailedConditionsResponse } from "../types/weather";
-import ForecastCard from "../components/ForecastCard";
+import ForecastCard from "../components/ForecastCardDetailed";
 
 export default function Conditions() {
   const [data, setData] = useState<DetailedConditionsResponse | null>(null);
@@ -26,7 +26,6 @@ export default function Conditions() {
   dia: "Hoje", // ou você pode usar uma função que gera a data atual formatada
   tempo: data.condition,
   maxima: `${data.temperature_c}`, // como não há máxima, usa-se a atual
-  minima: `${data.feelslike_c}` ,  // usa-se o "feels like" como mínima
   iuv: `${data.uv}`, // agora inclui o campo exigido
   city: `${data.city}`,
   region: `${data.region}`,
