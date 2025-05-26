@@ -3,8 +3,6 @@ import { DetailedWeatherData } from "../types/weather";
 export default function ForecastCard({
   dia,
   condition,
-  maxima,
-  minima,
   temperature_c,
   city,
   region,
