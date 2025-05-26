@@ -24,7 +24,7 @@ async def get_forecast():
         raise HTTPException(status_code=500, detail=str(e))
     
 @router.get("/getdetailed")
-async def get_forecast():
+async def get_detailedCondiditons():
     logger.info("Fetching home detailed conditions ")
     try:
         data = await getDetailedConditions()
