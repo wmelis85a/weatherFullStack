@@ -1,17 +1,21 @@
 import { useEffect, useState } from "react";
 import { getDetailedConditions } from "../services/api";
-import { DetailedConditionsResponse } from "../types/weather";
+import { DetailedWeatherData } from "../types/weather";
 import ForecastCard from "../components/ForecastCardDetailed";
 
 export default function Conditions() {
-  const [data, setData] = useState<DetailedConditionsResponse | null>(null);
+  const [data, setData] = useState<DetailedWeatherData | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    getDetailedConditions()
-      .then((res) => setData(res))
-      .catch(() => setError("Erro ao Error fetching climate data"));
-  }, []);
+useEffect(() => {
+  getDetailedConditions()
+    .then((res) => {
+      console.log("Dados do getDetailedConditions:", res);
+      setData(res);
+    })
+    .catch(() => setError("Erro ao buscar dados climáticos"));
+}, []);
+
 
   if (!data) {
     return <p>Carregando previsão...</p>;
@@ -22,21 +26,26 @@ export default function Conditions() {
     return <p>{error}</p>;
   }
 
-  const cardData = {
-  dia: "Hoje", // ou você pode usar uma função que gera a data atual formatada
-  tempo: data.condition,
-  maxima: `${data.temperature_c}`, // como não há máxima, usa-se a atual
-  iuv: `${data.uv}`, // agora inclui o campo exigido
-  city: `${data.city}`,
-  region: `${data.region}`,
-  country: `${data.country}`,
-  Temperatura: `${data.temperature_c}`,
-  icon: `${data.icon}`,
-  Humidade: `${data.humidity}`,
-  Velocidade_Vendo: `${data.wind_kph}`,
-  Térmica:  `${data.feelslike_c}`,
-  uv:  `${data.uv}`
-
+const cardData: DetailedWeatherData = {
+    dia: "Hoje",
+    tempo: data.condition,
+    condition: data.condition,
+    maxima: "", // Você precisará obter esse valor
+    minima: "", // Você precisará obter esse valor
+    iuv: data.uv.toString(),
+    city: data.city,
+    region: data.region,
+    country: data.country,
+    temperature_c: data.temperature_c, // Nome igual ao da API
+    feelslike_c: data.feelslike_c,    // Nome igual ao da API
+    icon: data.icon,
+    humidity: data.humidity,          // Nome igual ao da API
+    wind_kph: data.wind_kph,          // Nome igual ao da API
+    uv: data.uv,
+    updated: data.updated,            // Nome igual ao da API
+    pressure_mb: data.pressure_mb,
+    localtime: data.localtime,        // Nome igual ao da API
+    termica: ""
 };
 
   return (

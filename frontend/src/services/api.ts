@@ -32,7 +32,7 @@ export async function getHomeForecast(): Promise<PrevisaoResponse> {
 }
 export async function getDetailedConditions(): Promise<DetailedConditionsResponse> {
   try {
-    const response = await api.get<DetailedConditionsResponse>(`${VITE_API_CONDITIONS_URL}`);
+    const response = await api.get<DetailedConditionsResponse>(`${VITE_API_CONDITIONS_URL}`); //replaces axios const baseUrl
     return response.data;
   } catch (error) {
     throw new Error("Error fetching detailed conditions");
