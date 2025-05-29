@@ -13,11 +13,13 @@ export default function ForecastCard({
   wind_kph,
   pressure_mb, // Corrigido para pressure_mb
   localtime,
-  updated,
+  Updated,
   feelslike_c,
 }: DetailedWeatherData) {
 
+  console .log("updated", Updated)
     const getPressureValue = () => {
+      console.log("hello from pressure", pressure_mb)
     // Caso 1: Se já vier como número (1021)
     if (typeof pressure_mb === 'number') {
       return `${pressure_mb} hPa`;
@@ -78,7 +80,7 @@ export default function ForecastCard({
           <p><span className="font-semibold">Localização:</span> {city}, {region} - {country}</p>
           <p><span className="font-semibold">Hora Local:</span> {formatDate(localtime)}</p>
           <p><span className="font-semibold">Pressão:</span> {getPressureValue()} hPa</p>
-          <p><span className="font-semibold">Atualizado:</span> {new Date(updated).toLocaleString()}</p>
+          <p><span className="font-semibold">Atualizado:</span> {new Date(Updated).toLocaleString()}</p>
         </div>
       </div>
     </div>

@@ -52,7 +52,7 @@ export interface DetailedWeatherData {
     humidity: number;     // Agora corresponde à API
     wind_kph: number;     // Agora corresponde à API
     uv: number;
-    updated: string;      // Agora corresponde à API
+    Updated: string;     // Agora corresponde à API
     pressure_mb: string;
     localtime: string;    // Agora corresponde à API
     termica: string;

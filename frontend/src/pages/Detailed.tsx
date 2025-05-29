@@ -48,6 +48,9 @@ const cardData: DetailedWeatherData = {
     termica: ""
 };
 
+console.log(cardData.pressure_mb)
+console.log(cardData.updated)
+
   return (
     <div className="w-full">
     <h2 className="text-2xl font-bold text-center mb-2">Detailed hometown conditions</h2>
