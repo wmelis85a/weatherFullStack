@@ -1,7 +1,7 @@
 import httpx
 import xmltodict
 from app.config import HOME_FORECAST_API , WEATHER_API_KEY
-from app.services.translator import translate_dict_values, translation_map
+from app.helpers.translator import translate_dict_values, translation_map
 import logging
 import time
 from tenacity import retry, stop_after_attempt, wait_exponential

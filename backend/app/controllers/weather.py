@@ -8,7 +8,7 @@ logger = logging.getLogger("uvicorn.error")
 
 router = APIRouter()
 
-@router.get("/health", tags=["Health Check"])
+@router.api_route("/health", tags=["Health Check"], methods=["GET", "HEAD"])
 async def healthCheck():
     logger.info("Hello from keepalive endpoint")
     return {"status": "ok"}
