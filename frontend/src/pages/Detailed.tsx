@@ -42,14 +42,14 @@ const cardData: DetailedWeatherData = {
     humidity: data.humidity,          // Nome igual ao da API
     wind_kph: data.wind_kph,          // Nome igual ao da API
     uv: data.uv,
-    updated: data.updated,            // Nome igual ao da API
+    Updated: data.Updated,            // Nome igual ao da API
     pressure_mb: data.pressure_mb,
     localtime: data.localtime,        // Nome igual ao da API
     termica: ""
 };
 
 console.log(cardData.pressure_mb)
-console.log(cardData.updated)
+console.log(cardData.Updated)
 
   return (
     <div className="w-full">
