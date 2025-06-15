@@ -1,6 +1,8 @@
 from fastapi import APIRouter, Body, Query, HTTPException
 from app.services.weather_service import getDetailedConditions, getHomeForecast
 from app.services.emailer import EmailRequest, sendEmail
+from app.helpers.normalize import normalize_city_name
+
 import logging
 
 logger = logging.getLogger("uvicorn.error")
@@ -14,10 +16,11 @@ async def healthCheck():
     return {"status": "ok"}
 
 @router.get("/getHomeForecast")
-async def get_forecast():
+async def get_forecast(name: str = Query(..., description="CPTEC city name")):
     logger.info("Fetching home forecast info ")
     try:
-        data = await getHomeForecast()
+        normalizedName = normalize_city_name(name)
+        data = await getHomeForecast(normalizedName)
         return data
     except Exception as e:
         logger.error("Unable to reach for INPE api", e)
