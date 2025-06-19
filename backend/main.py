@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from app.api import weather
+from app.controllers import weather
 from fastapi.middleware.cors import CORSMiddleware
 
 
