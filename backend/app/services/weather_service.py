@@ -1,6 +1,6 @@
 import httpx
 import xmltodict
-from app.config import HOME_FORECAST_API , WEATHER_API_KEY
+from app.config import DETAILED_FORECAST_API, HOME_FORECAST_API , WEATHER_API_KEY
 from app.helpers.translator import translate_dict_values, translation_map
 import logging
 import time
@@ -66,10 +66,10 @@ async def getHomeForecast(name) -> dict:
 
 
 @retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=2, max=10), reraise=True)
-async def getDetailedConditions(): 
+async def getDetailedConditions(city): 
 
-    baseUrl ="https://api.weatherapi.com/v1"
-    url = f"{baseUrl}/current.json?key={WEATHER_API_KEY}&q=nilopolis&aqi=no"
+    baseUrl =f"{DETAILED_FORECAST_API}"
+    url = f"{baseUrl}/current.json?key={WEATHER_API_KEY}&q={city}&aqi=no"
     logger.debug(f"Fetching data from {url}...")
 
     async with httpx.AsyncClient() as client:
