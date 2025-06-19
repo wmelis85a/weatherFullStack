@@ -22,18 +22,25 @@ axiosRetry(api, {
   }
 });
 
-export async function getHomeForecast(): Promise<PrevisaoResponse> {
+export async function getHomeForecast(query: string): Promise<PrevisaoResponse> {
   try {
-    const response = await api.get<PrevisaoResponse>(`${VITE_API_URL}`);
+    console.log(query);
+
+    const response = await api.get<PrevisaoResponse>(`${VITE_API_URL}` , {
+      params: { city: query }
+    });
     return response.data;
   } catch (error) {
     throw new Error("Error fetching home forecast");
   }
 }
-export async function getDetailedConditions(): Promise<DetailedWeatherData> {
+export async function getDetailedConditions(query: string): Promise<DetailedWeatherData> {
   try {
-    const response = await api.get<DetailedWeatherData>(`${VITE_API_CONDITIONS_URL}`); //replaces axios const baseUrl
-    console.log("hello from api data", response.data);
+    console.log("🔎 Enviando query para detailed:", query);
+
+    const response = await api.get<DetailedWeatherData>(`${VITE_API_CONDITIONS_URL}`, {
+       params: { city: query }
+    }); //replaces axios const baseUrl
     return response.data;
   } catch (error) {
     throw new Error("Error fetching detailed conditions");

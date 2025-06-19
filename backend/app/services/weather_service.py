@@ -1,6 +1,6 @@
 import httpx
 import xmltodict
-from app.config import HOME_FORECAST_API , WEATHER_API_KEY
+from app.config import DETAILED_FORECAST_API, HOME_FORECAST_API , WEATHER_API_KEY
 from app.helpers.translator import translate_dict_values, translation_map
 import logging
 import time
@@ -13,10 +13,28 @@ from app.helpers.dict import conditions_filtered
 logger = logging.getLogger("uvicorn.error")
 
 @retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=2, max=10), reraise=True)
-async def getHomeForecast() -> dict:
+async def getHomeForecast(name) -> dict:
     total_start = time.perf_counter()
 
-    url = f"{HOME_FORECAST_API}"
+    cityNameUrl = f"http://servicos.cptec.inpe.br/XML/listaCidades?city={name}"
+
+    async with httpx.AsyncClient() as client:
+        response = await client.get(cityNameUrl)
+        response.raise_for_status()
+
+    xml_data = response.text
+    dict = xmltodict.parse(xml_data)
+    logger.debug(f"Raw xml: {xml_data}")
+    logger.info("Translating xml city data values...")
+    logger.info("Parsing xml data into json...")
+    code = cidade = dict["cidades"]["cidade"]
+    if isinstance(cidade, list):
+        cidade = cidade[0]  # Uses first result, if multiple availiable
+
+    code = cidade["id"]
+
+
+    url = f"{HOME_FORECAST_API}/{code}/previsao.xml"
     logger.debug(f"Fetching data from {url}...")
 
     request_start = time.perf_counter()
@@ -48,10 +66,10 @@ async def getHomeForecast() -> dict:
 
 
 @retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=2, max=10), reraise=True)
-async def getDetailedConditions(): 
+async def getDetailedConditions(city): 
 
-    baseUrl ="https://api.weatherapi.com/v1"
-    url = f"{baseUrl}/current.json?key={WEATHER_API_KEY}&q=nilopolis&aqi=no"
+    baseUrl =f"{DETAILED_FORECAST_API}"
+    url = f"{baseUrl}/current.json?key={WEATHER_API_KEY}&q={city}&aqi=no"
     logger.debug(f"Fetching data from {url}...")
 
     async with httpx.AsyncClient() as client:

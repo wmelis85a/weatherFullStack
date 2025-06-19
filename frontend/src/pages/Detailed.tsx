@@ -1,62 +1,37 @@
 import { useEffect, useState } from "react";
 import { getDetailedConditions } from "../services/api";
-import { DetailedWeatherData } from "../types/weather";
+import { useCity } from "../contexts/CityContext";
 import ForecastCard from "../components/ForecastCardDetailed";
+import { DetailedWeatherData } from "../types/weather";
 
 export default function Conditions() {
+  const { city } = useCity();
   const [data, setData] = useState<DetailedWeatherData | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-useEffect(() => {
-  getDetailedConditions()
-    .then((res) => {
-      console.log("Dados do getDetailedConditions:", res);
-      setData(res);
-    })
-    .catch(() => setError("Erro ao buscar dados climáticos"));
-}, []);
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const response = await getDetailedConditions(city); // city vem do contexto
+        setData(response);
+      } catch (err) {
+        setError("Erro ao buscar dados climáticos");
+        console.error(err);
+      }
+    }
 
+    fetchData();
+  }, [city]);
 
-  if (!data) {
-    return <p>Carregando previsão...</p>;
-  }
-
-
-  if (error) {
-    return <p>{error}</p>;
-  }
-
-const cardData: DetailedWeatherData = {
-    dia: "Hoje",
-    tempo: data.condition,
-    condition: data.condition,
-    maxima: "", // Você precisará obter esse valor
-    minima: "", // Você precisará obter esse valor
-    iuv: data.uv.toString(),
-    city: data.city,
-    region: data.region,
-    country: data.country,
-    temperature_c: data.temperature_c, // Nome igual ao da API
-    feelslike_c: data.feelslike_c,    // Nome igual ao da API
-    icon: data.icon,
-    humidity: data.humidity,          // Nome igual ao da API
-    wind_kph: data.wind_kph,          // Nome igual ao da API
-    uv: data.uv,
-    Updated: data.Updated,            // Nome igual ao da API
-    pressure_mb: data.pressure_mb,
-    localtime: data.localtime,        // Nome igual ao da API
-    termica: ""
-};
-
-console.log(cardData.pressure_mb)
-console.log(cardData.Updated)
+  if (error) return <p>{error}</p>;
+  if (!data) return <p>Carregando dados...</p>;
 
   return (
     <div className="w-full">
-    <h2 className="text-2xl font-bold text-center mb-2">Detailed hometown conditions</h2>
-    <div className="flex justify-center">
-      <ForecastCard {...cardData} />
+      <h2 className="text-2xl font-bold text-center mb-2">Detailed conditions</h2>
+      <div className="flex justify-center">
+        <ForecastCard {...data} />
+      </div>
     </div>
-  </div>
   );
 }
