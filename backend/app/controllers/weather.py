@@ -16,10 +16,10 @@ async def healthCheck():
     return {"status": "ok"}
 
 @router.get("/getHomeForecast")
-async def get_forecast(name: str = Query(..., description="CPTEC city name")):
+async def get_forecast(city: str = Query(..., description="CPTEC city name")):
     logger.info("Fetching home forecast info ")
     try:
-        normalizedName = normalize_city_name(name)
+        normalizedName = normalize_city_name(city)
         data = await getHomeForecast(normalizedName)
         return data
     except Exception as e:
