@@ -1,40 +1,42 @@
 import { useState } from "react";
-import { getHomeForecast } from "../services/api";
-import { PrevisaoResponse } from "../types/weather";
+import { useCity } from "../contexts/CityContext";
+import { getDetailedConditions } from "../services/api"; // 👈 trocar import
 
 interface SearchBarProps {
-  onSearch: (data: PrevisaoResponse | null) => void;
+  onSearch: (data: any) => void;
 }
 
 export default function SearchBar({ onSearch }: SearchBarProps) {
   const [query, setQuery] = useState("");
+  const { setCity } = useCity();
 
   const handleSearch = async () => {
+    if (!query) return;
+
     try {
-      const response = await getHomeForecast(query);
-      onSearch(response);
+      const result = await getDetailedConditions(query); // ✅ função correta
+      onSearch(result);
+      setCity(query);
     } catch (error) {
-      onSearch(null);
+      console.error("Erro ao buscar previsão:", error);
     }
   };
 
   return (
-    <header className="bg-gray-900 text-white px-4 py-4 shadow-md">
-      <div className="flex gap-2">
-        <input
-          type="text"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search for city name"
-          className="px-3 py-2 rounded-md text-black w-64"
-        />
-        <button
-          onClick={handleSearch}
-          className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-md"
-        >
-          Search
-        </button>
-      </div>
-    </header>
+    <div className="flex justify-center mb-4">
+      <input
+        type="text"
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+        placeholder="Digite o nome da cidade"
+        className="px-4 py-2 rounded-l bg-gray-700 text-white"
+      />
+      <button
+        onClick={handleSearch}
+        className="px-4 py-2 rounded-r bg-blue-500 hover:bg-blue-600 text-white"
+      >
+        Buscar
+      </button>
+    </div>
   );
 }
