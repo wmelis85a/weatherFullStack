@@ -22,9 +22,11 @@ axiosRetry(api, {
   }
 });
 
-export async function getHomeForecast(): Promise<PrevisaoResponse> {
+export async function getHomeForecast(query: string): Promise<PrevisaoResponse> {
   try {
-    const response = await api.get<PrevisaoResponse>(`${VITE_API_URL}`);
+    const response = await api.get<PrevisaoResponse>(`${VITE_API_URL}` , {
+      params: { city: query }
+    });
     return response.data;
   } catch (error) {
     throw new Error("Error fetching home forecast");
