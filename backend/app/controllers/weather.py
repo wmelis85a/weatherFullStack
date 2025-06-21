@@ -30,7 +30,8 @@ async def get_forecast(city: str = Query(..., description="CPTEC city name")):
 async def get_detailedCondiditons(city: str = Query(..., description="Weather Api city name")):
     logger.info("Fetching home detailed conditions ")
     try:
-        data = await getDetailedConditions(city)
+        normalizedName = normalize_city_name(city)
+        data = await getDetailedConditions(normalizedName)
         return data
     except Exception as e:
         logger.error("Unable to reach Weather Api", e)
