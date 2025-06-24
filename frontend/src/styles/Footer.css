@@ -6,7 +6,7 @@
     background-color: #222;           /* Cor de fundo escura */
     color: #f1f1f1;                   /* Texto claro */
     text-align: center;               /* Centraliza o texto */
-    padding: 1rem;                    /* Espaçamento interno */
+    padding: 0.3rem;                    /* Espaçamento interno */
     font-size: 0.9rem;                /* Fonte menor */
     position: fixed;                 /* Fixa no rodapé */
     bottom: 0;
