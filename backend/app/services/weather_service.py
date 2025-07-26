@@ -1,12 +1,12 @@
 import httpx
 import xmltodict
-from app.config import DETAILED_FORECAST_API, HOME_FORECAST_API , WEATHER_API_KEY
+from app.config import DETAILED_FORECAST_API, HOME_FORECAST_API , WEATHER_API_KEY, OPEN_WEATHER_APP_ID, GEOCODING_API
 from app.helpers.translator import translate_dict_values, translation_map
 import logging
 import time
 from tenacity import retry, stop_after_attempt, wait_exponential
 
-from app.helpers.dict import conditions_filtered
+from app.helpers.dict import conditions_filtered, extended_conditions_filtered
 
 
 
@@ -77,4 +77,15 @@ async def getDetailedConditions(city):
         response.raise_for_status()
 
     filtered = conditions_filtered(response.json())
+    return filtered
+
+@retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=2, max=10), reraise=True)
+async def getDailyForecast(city) -> dict:
+
+    dailyForecastUrl = f"{DETAILED_FORECAST_API}/forecast.json?key={WEATHER_API_KEY}&q={city}&days=1&hourly=1&lang=pt"
+    async with httpx.AsyncClient() as client:
+        response = await client.get(dailyForecastUrl)
+        response.raise_for_status()
+
+    filtered = extended_conditions_filtered(response.json())
     return filtered
