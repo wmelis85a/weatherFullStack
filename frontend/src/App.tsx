@@ -10,6 +10,7 @@ import ForecastCard from "./components/ForecastCard";
 
 import { PrevisaoResponse } from "./types/weather";
 import { CityProvider } from "./contexts/CityContext";
+import ExtendedForecast from './pages/ExtendedForecast'; // Importe a página
 
 function App() {
   const [searchForecast, setSearchForecast] = useState<PrevisaoResponse | null>(null);
@@ -37,6 +38,7 @@ function App() {
               <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/detailed" element={<Detailed />} />
+                <Route path="/extended" element={<ExtendedForecast  />} />
               </Routes>
             )}
           </main>

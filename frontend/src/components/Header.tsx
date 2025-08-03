@@ -6,6 +6,7 @@ const Header = () => {
       <nav className="flex space-x-4">
         <Link to="/" className="text-white hover:text-gray-400">Home</Link>
         <Link to="/detailed" className="text-white hover:text-gray-400">Detailed Forecast</Link>
+        <Link to="/extended" className="text-white hover:text-gray-400">Extended Forecast</Link>
       </nav>
     </header>
   );

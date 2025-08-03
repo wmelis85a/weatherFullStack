@@ -65,4 +65,22 @@ export interface DetailedWeatherData {
     maxima: string;
     minima: string;
   }
-  
+
+export interface HourlyForecast {
+  time: string;
+  temp_c: number;
+  condition: string;
+  will_it_rain: 0 | 1;
+  chance_of_rain: number;
+}
+
+export interface WeatherData {
+    city: string;
+    region: string;
+    country: string;
+    date: string;
+    condition: string;
+    min_temp_c: number;
+    max_temp_c: number;
+    hourly: HourlyForecast[];
+}

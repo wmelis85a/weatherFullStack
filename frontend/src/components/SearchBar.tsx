@@ -1,25 +1,15 @@
+// SearchBar.tsx
 import { useState } from "react";
 import { useCity } from "../contexts/CityContext";
-import { getDetailedConditions } from "../services/api"; // 👈 trocar import
 
-interface SearchBarProps {
-  onSearch: (data: any) => void;
-}
-
-export default function SearchBar({ onSearch }: SearchBarProps) {
+export default function SearchBar() {
   const [query, setQuery] = useState("");
   const { setCity } = useCity();
 
-  const handleSearch = async () => {
+  const handleSearch = () => {
     if (!query) return;
-
-    try {
-      const result = await getDetailedConditions(query); // ✅ função correta
-      onSearch(result);
-      setCity(query);
-    } catch (error) {
-      console.error("Erro ao buscar previsão:", error);
-    }
+    setCity(query);
+    setQuery(""); // Limpa o input
   };
 
   return (

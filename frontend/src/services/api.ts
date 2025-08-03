@@ -2,9 +2,11 @@ import axios from "axios";
 import axiosRetry from 'axios-retry';
 import { PrevisaoResponse } from "../types/weather";
 import { DetailedWeatherData } from "../types/weather";
+import { ExtendedWeatherData } from "../types/weather";
 
 const VITE_API_URL = import.meta.env.VITE_API_URL;
 const VITE_API_CONDITIONS_URL = import.meta.env.VITE_API_CONDITIONS_URL;
+const VITE_EX = import.meta.env.VITE_API_EXTENDED_CONDITIONS_URL;
 
 const api = axios.create({
   baseURL: `${VITE_API_URL}`,
@@ -44,6 +46,20 @@ export async function getDetailedConditions(query: string): Promise<DetailedWeat
     return response.data;
   } catch (error) {
     throw new Error("Error fetching detailed conditions");
+  }
+}
+
+export async function getExtendedForecast(query: string): Promise<ExtendedWeatherData[]> {
+  try {
+
+    const response = await axios.get<ExtendedWeatherData[]>(`${VITE_EX}`, {
+      params: { city: query }
+    });
+    console.log("Dados recebidos:", response.data);
+
+    return response.data;
+  } catch (error) {
+    throw new Error("Error fetching extended forecast");
   }
 }
 
