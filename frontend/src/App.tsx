@@ -20,7 +20,12 @@ function App() {
       <Router>
         <div className="min-h-screen bg-gray-900 text-white flex flex-col">
           <Header />
-          <SearchBar onSearch={setSearchForecast} /> {/* Atualiza o contexto e a previsão */}
+          <SearchBar onSearch={async (searchValue: string) => {
+            // Replace this with your actual API call to fetch the forecast
+            const response = await fetch(`/api/forecast?city=${encodeURIComponent(searchValue)}`);
+            const data: PrevisaoResponse = await response.json();
+            setSearchForecast(data);
+          }} /> {/* Atualiza o contexto e a previsão */}
 
           <main className="flex-grow mx-auto px-4 py-6 w-full max-w-7xl">
               {searchForecast && searchForecast.cidade ? (

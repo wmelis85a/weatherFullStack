@@ -1,8 +1,7 @@
 import axios from "axios";
 import axiosRetry from 'axios-retry';
-import { PrevisaoResponse } from "../types/weather";
+import { PrevisaoResponse, WeatherData } from "../types/weather";
 import { DetailedWeatherData } from "../types/weather";
-import { ExtendedWeatherData } from "../types/weather";
 
 const VITE_API_URL = import.meta.env.VITE_API_URL;
 const VITE_API_CONDITIONS_URL = import.meta.env.VITE_API_CONDITIONS_URL;
@@ -49,10 +48,10 @@ export async function getDetailedConditions(query: string): Promise<DetailedWeat
   }
 }
 
-export async function getExtendedForecast(query: string): Promise<ExtendedWeatherData[]> {
+export async function getExtendedForecast(query: string): Promise<WeatherData[]> {
   try {
 
-    const response = await axios.get<ExtendedWeatherData[]>(`${VITE_EX}`, {
+    const response = await axios.get<WeatherData[]>(`${VITE_EX}`, {
       params: { city: query }
     });
     console.log("Dados recebidos:", response.data);
