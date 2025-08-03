@@ -1,15 +1,27 @@
-import { Link } from "react-router-dom";
+// src/components/Header.tsx (Versão corrigida e consistente)
 
-const Header = () => {
+import { Link } from "react-router-dom";
+import SearchBar from "./SearchBar";
+
+export default function Header() {
+
   return (
-    <header className="bg-gray-800 p-4">
-      <nav className="flex space-x-4">
-        <Link to="/" className="text-white hover:text-gray-400">Home</Link>
-        <Link to="/detailed" className="text-white hover:text-gray-400">Detailed Forecast</Link>
-        <Link to="/extended" className="text-white hover:text-gray-400">Extended Forecast</Link>
+    <header className="flex justify-between items-center p-4 bg-gray-800 text-white">
+      <nav>
+        <ul className="flex space-x-4">
+          <li>
+            <Link to="/">Home</Link>
+          </li>
+          <li>
+            <Link to="/detailed">Detailed Forecast</Link>
+          </li>
+          <li>
+            <Link to="/extended">Extended Forecast</Link>
+          </li>
+        </ul>
       </nav>
+      {/* 👈 A SearchBar agora é renderizada sem props */}
+      <SearchBar />
     </header>
   );
-};
-
-export default Header;
+}
