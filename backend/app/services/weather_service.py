@@ -1,9 +1,11 @@
 import httpx
 import xmltodict
-from app.config import DETAILED_FORECAST_API, HOME_FORECAST_API , WEATHER_API_KEY, OPEN_WEATHER_APP_ID, GEOCODING_API
+from app.config import DETAILED_FORECAST_API, HOME_FORECAST_API , HOME_FORECAST_API_FALLBACK, WEATHER_API_KEY, OPEN_WEATHER_APP_ID, GEOCODING_API
 from app.helpers.translator import translate_dict_values, translation_map
 import logging
 import time
+import xml.etree.ElementTree as ET
+
 from tenacity import retry, stop_after_attempt, wait_exponential
 
 from app.helpers.dict import conditions_filtered, extended_conditions_filtered
@@ -16,13 +18,30 @@ logger = logging.getLogger("uvicorn.error")
 async def getHomeForecast(name) -> dict:
     total_start = time.perf_counter()
 
+    #gets the city code from CPTEC api
     cityNameUrl = f"http://servicos.cptec.inpe.br/XML/listaCidades?city={name}"
 
     async with httpx.AsyncClient() as client:
         response = await client.get(cityNameUrl)
         response.raise_for_status()
 
+
     xml_data = response.text
+
+    #first checks if the cptec xml contains a city info
+    root = ET.fromstring(xml_data)
+    city = root.find('cidade')
+    if city is None or len(city) == 0:
+        logger.info(f"City '{name}' not found in CPTEC API. Fallback to Openweather API starting...")
+        url = f"{HOME_FORECAST_API_FALLBACK}?key={WEATHER_API_KEY}&q={name}&aqi=no"
+        async with httpx.AsyncClient() as client:
+            response = await client.get(url)
+            request_duration = time.perf_counter() - request_start
+            logger.debug(f"HTTP request completed in {request_duration:.4f} seconds")
+
+            response.raise_for_status()
+
+
     dict = xmltodict.parse(xml_data)
     logger.debug(f"Raw xml: {xml_data}")
     logger.info("Translating xml city data values...")
@@ -33,7 +52,7 @@ async def getHomeForecast(name) -> dict:
 
     code = cidade["id"]
 
-
+    #passes city cod to get the weather forecast api
     url = f"{HOME_FORECAST_API}/{code}/previsao.xml"
     logger.debug(f"Fetching data from {url}...")
 
