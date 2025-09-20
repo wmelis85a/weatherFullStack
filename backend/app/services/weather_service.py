@@ -41,9 +41,13 @@ async def getHomeForecast(name) -> dict:
             response = await client.get(url)
             request_duration = time.perf_counter() - request_start
             logger.debug(f"HTTP request completed in {request_duration:.4f} seconds")
-            
+            logger.debug(response.json())
+
             response.raise_for_status()
-            return response.json()
+            return { 
+                "source": "openweather",
+                "data": response.json()
+            }
 
 
     dict = xmltodict.parse(xml_data)
