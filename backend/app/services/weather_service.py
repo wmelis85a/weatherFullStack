@@ -31,6 +31,9 @@ async def getHomeForecast(name) -> dict:
     #first checks if the cptec xml contains a city info
     root = ET.fromstring(xml_data)
     city = root.find('cidade')
+
+    request_start = time.perf_counter()
+    
     if city is None or len(city) == 0:
         logger.info(f"City '{name}' not found in CPTEC API. Fallback to Openweather API starting...")
         url = f"{HOME_FORECAST_API_FALLBACK}?key={WEATHER_API_KEY}&q={name}&aqi=no"
@@ -38,8 +41,13 @@ async def getHomeForecast(name) -> dict:
             response = await client.get(url)
             request_duration = time.perf_counter() - request_start
             logger.debug(f"HTTP request completed in {request_duration:.4f} seconds")
+            logger.debug(response.json())
 
             response.raise_for_status()
+            return { 
+                "source": "openweather",
+                "data": response.json()
+            }
 
 
     dict = xmltodict.parse(xml_data)
