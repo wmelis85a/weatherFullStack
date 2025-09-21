@@ -1,11 +1,11 @@
-import type { DiaPrevisao } from "../types/weather";
+import type { HomeForecastItem } from "../types/weather";
 
 export default function ForecastCard({
   dia,
   tempo,
   maxima,
   minima,
-}: DiaPrevisao) {
+}: HomeForecastItem) {
   return (
     <div className="bg-gray-800 text-white rounded-lg shadow-md p-4 hover:shadow-lg transition duration-300 h-full">
       <h3 className="text-md font-semibold mb-2">{dia}</h3>
