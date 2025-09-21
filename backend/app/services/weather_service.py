@@ -1,54 +1,70 @@
-import httpx
-import xmltodict
-from app.config import DETAILED_FORECAST_API, HOME_FORECAST_API , HOME_FORECAST_API_FALLBACK, WEATHER_API_KEY, OPEN_WEATHER_APP_ID, GEOCODING_API
-from app.helpers.translator import translate_dict_values, translation_map
 import logging
 import time
 import xml.etree.ElementTree as ET
 
+import httpx
+import xmltodict
+from fastapi import HTTPException
 from tenacity import retry, stop_after_attempt, wait_exponential
 
+from app.config import (
+    DETAILED_FORECAST_API,
+    HOME_FORECAST_API,
+    HOME_FORECAST_API_FALLBACK,
+    WEATHER_API_KEY,
+)
+from app.helpers.apiParser import adapt_current_weather_for_frontend
 from app.helpers.dict import conditions_filtered, extended_conditions_filtered
-
-
+from app.helpers.translator import translate_dict_values, translation_map
 
 logger = logging.getLogger("uvicorn.error")
 
-@retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=2, max=10), reraise=True)
+
+@retry(
+    stop=stop_after_attempt(3),
+    wait=wait_exponential(multiplier=1, min=2, max=10),
+    reraise=True,
+)
 async def getHomeForecast(name) -> dict:
     total_start = time.perf_counter()
 
-    #gets the city code from CPTEC api
+    # gets the city code from CPTEC api
     cityNameUrl = f"http://servicos.cptec.inpe.br/XML/listaCidades?city={name}"
 
     async with httpx.AsyncClient() as client:
         response = await client.get(cityNameUrl)
         response.raise_for_status()
 
-
     xml_data = response.text
 
-    #first checks if the cptec xml contains a city info
+    # first checks if the cptec xml contains a city info
     root = ET.fromstring(xml_data)
-    city = root.find('cidade')
+    city = root.find("cidade")
 
     request_start = time.perf_counter()
-    
+
     if city is None or len(city) == 0:
-        logger.info(f"City '{name}' not found in CPTEC API. Fallback to Openweather API starting...")
+        logger.info(
+            f"City '{name}' not found in CPTEC API. Fallback to Openweather API starting..."
+        )
         url = f"{HOME_FORECAST_API_FALLBACK}?key={WEATHER_API_KEY}&q={name}&aqi=no"
         async with httpx.AsyncClient() as client:
             response = await client.get(url)
+            logger.debug(f"fallback object {response.text}...")
             request_duration = time.perf_counter() - request_start
-            logger.debug(f"HTTP request completed in {request_duration:.4f} seconds")
-            logger.debug(response.json())
-
             response.raise_for_status()
-            return { 
-                "source": "openweather",
-                "data": response.json()
-            }
 
+            response_data = response.json()
+
+            if "error" in response_data:
+                error_message = response_data["error"]["message"]
+                logger.error(
+                    f"WeatherAPI fallback failed for city '{name}': {error_message}"
+                )
+                raise HTTPException(status_code=404, detail=f"City '{name}' not found.")
+
+            parsed_weather = adapt_current_weather_for_frontend(response_data)
+            return parsed_weather
 
     dict = xmltodict.parse(xml_data)
     logger.debug(f"Raw xml: {xml_data}")
@@ -60,7 +76,7 @@ async def getHomeForecast(name) -> dict:
 
     code = cidade["id"]
 
-    #passes city cod to get the weather forecast api
+    # passes city cod to get the weather forecast api
     url = f"{HOME_FORECAST_API}/{code}/previsao.xml"
     logger.debug(f"Fetching data from {url}...")
 
@@ -88,14 +104,17 @@ async def getHomeForecast(name) -> dict:
 
     total_duration = time.perf_counter() - total_start
     logger.info(f"Total processing time: {total_duration:.4f} seconds")
-    
+
     return resp
 
 
-@retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=2, max=10), reraise=True)
-async def getDetailedConditions(city): 
-
-    baseUrl =f"{DETAILED_FORECAST_API}"
+@retry(
+    stop=stop_after_attempt(3),
+    wait=wait_exponential(multiplier=1, min=2, max=10),
+    reraise=True,
+)
+async def getDetailedConditions(city):
+    baseUrl = f"{DETAILED_FORECAST_API}"
     url = f"{baseUrl}/current.json?key={WEATHER_API_KEY}&q={city}&aqi=no"
     logger.debug(f"Fetching data from {url}...")
 
@@ -106,9 +125,13 @@ async def getDetailedConditions(city):
     filtered = conditions_filtered(response.json())
     return filtered
 
-@retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=2, max=10), reraise=True)
-async def getDailyForecast(city) -> dict:
 
+@retry(
+    stop=stop_after_attempt(3),
+    wait=wait_exponential(multiplier=1, min=2, max=10),
+    reraise=True,
+)
+async def getDailyForecast(city) -> dict:
     dailyForecastUrl = f"{DETAILED_FORECAST_API}/forecast.json?key={WEATHER_API_KEY}&q={city}&days=1&hourly=1&lang=pt"
     async with httpx.AsyncClient() as client:
         response = await client.get(dailyForecastUrl)

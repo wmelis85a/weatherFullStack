@@ -2,7 +2,7 @@ translation_map = {
     "pn": "parcialmente nublado",
     "ec": "Encoberto com Chuvas Isoladas",
     "ci": "Chuvas Isoladas",
-    "c"	: "Chuva",
+    "c": "Chuva",
     "in": "Instável",
     "pp": "Poss. de Pancadas de Chuva",
     "cm": "Chuva pela Manhã",
@@ -14,10 +14,10 @@ translation_map = {
     "pn": "Parcialmente Nublado",
     "cv": "Chuvisco",
     "ch": "Chuvoso",
-    "t":  "Tempestade",
+    "t": "Tempestade",
     "ps": "Predomínio de Sol",
-    "e":  "Encoberto",
-    "n":  "Nublado",
+    "e": "Encoberto",
+    "n": "Nublado",
     "cl": "Céu Claro",
     "nv": "Nevoeiro",
     "g": "Geada",
@@ -39,22 +39,23 @@ translation_map = {
     "ct": "Chuva a Tarde",
     "ppn": "Poss. de Panc. de Chuva a Noite",
     "ppt": "Poss. de Panc. de Chuva a Tarde",
-    "ppm": "Poss. de Panc. de Chuva pela Manhã"
+    "ppm": "Poss. de Panc. de Chuva pela Manhã",
 }
+
 
 def translate_dict_values(data, translation_map, keys_to_translate=None):
     """
-    Recursively translates values of specified keys in a nested dictionary or list structure 
+    Recursively translates values of specified keys in a nested dictionary or list structure
     using a given translation map.
 
-    This function traverses the input data structure and replaces the values of specified keys 
-    (if found in the translation map) with their corresponding translated values. It handles 
+    This function traverses the input data structure and replaces the values of specified keys
+    (if found in the translation map) with their corresponding translated values. It handles
     dictionaries nested within dictionaries and lists.
 
     Args:
         data (dict | list): The input data structure, which may contain nested dictionaries or lists.
         translation_map (dict): A mapping of original values (keys) to their translated values.
-        keys_to_translate (list[str], optional): A list of keys to look for in the structure. 
+        keys_to_translate (list[str], optional): A list of keys to look for in the structure.
             If None, all keys will be considered for translation.
 
     Returns:

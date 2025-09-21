@@ -1,7 +1,7 @@
 def conditions_filtered(data: dict) -> dict:
     return {
         "city": data["location"]["name"],
-        "localtime": data["location"]["localtime"], 
+        "localtime": data["location"]["localtime"],
         "region": data["location"]["region"],
         "country": data["location"]["country"],
         "temperature_c": data["current"]["temp_c"],
@@ -13,8 +13,8 @@ def conditions_filtered(data: dict) -> dict:
         "uv": data["current"]["uv"],
         "Updated": data["current"]["last_updated"],
         "Pressure milibars": data["current"]["pressure_mb"],
+    }
 
-        }
 
 def extended_conditions_filtered(data):
     location = data.get("location", {})
@@ -39,5 +39,5 @@ def extended_conditions_filtered(data):
                 "chance_of_rain": hour.get("chance_of_rain"),
             }
             for hour in hours
-        ]
+        ],
     }
