@@ -5,9 +5,8 @@ import { useCity } from "../contexts/CityContext";
 export default function ExtendedForecast() {
   const { city } = useCity(); // supondo que você está usando um contexto para armazenar a cidade
 
-
   return (
-    <div className="min-h-screen bg-gray-100"> 
+    <div className="min-h-screen bg-gray-100">
       <ForecastCardExtended city={city} />
     </div>
   );

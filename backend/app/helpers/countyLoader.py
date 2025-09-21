@@ -1,8 +1,12 @@
 # loaders.py
-import httpx, json, pathlib
+import json
+import pathlib
+
+import httpx
 
 DATA_URL = "https://servicodados.ibge.gov.br/api/v1/localidades/municipios"
 CACHE_FILE = pathlib.Path("municipios.json")
+
 
 def load_county() -> dict[str, int]:
     if CACHE_FILE.exists():

@@ -1,0 +1,28 @@
+# pyproject.toml
+
+[tool.ruff]
+# Define o comprimento máximo da linha, 88 é o padrão do Black
+line-length = 88
+
+# Lista de diretórios a serem ignorados pelo Ruff
+# Essencial para não verificar o ambiente virtual ou outras pastas
+exclude = [
+    ".git",
+    ".venv",
+    "__pycache__",
+    "docs",
+    "build",
+    "dist",
+]
+
+# Regras que o Ruff deve aplicar. Uma ótima seleção para começar:
+# E, W: Erros e avisos do pycodestyle (PEP 8)
+# F: Erros do Pyflakes (código não utilizado, variáveis indefinidas, etc.)
+# I: Regras do isort (para ordenar os imports automaticamente)
+# UP: Regras do pyupgrade (sugere sintaxes mais modernas de Python)
+select = ["E", "W", "F", "I", "UP"]
+
+[tool.ruff.format]
+# Habilita a formatação de código do Ruff (similar ao Black)
+quote-style = "double"
+indent-style = "space"

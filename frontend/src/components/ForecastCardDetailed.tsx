@@ -1,4 +1,4 @@
-import { DetailedWeatherData } from "../types/weather";
+import type { DetailedWeatherData } from "../types/weather";
 
 export default function ForecastCard({
   dia,
@@ -16,34 +16,33 @@ export default function ForecastCard({
   Updated,
   feelslike_c,
 }: DetailedWeatherData) {
-
-  console .log("updated", Updated)
-    const getPressureValue = () => {
-      console.log("hello from pressure", pressure_mb)
+  console.log("updated", Updated);
+  const getPressureValue = () => {
+    console.log("hello from pressure", pressure_mb);
     // Caso 1: Se já vier como número (1021)
-    if (typeof pressure_mb === 'number') {
+    if (typeof pressure_mb === "number") {
       return `${pressure_mb} hPa`;
     }
-    
+
     // Caso 2: Se vier como string descritiva ("Pressure milibars: 1021")
-    if (typeof pressure_mb === 'string') {
+    if (typeof pressure_mb === "string") {
       const match = pressure_mb.match(/\d+/);
-      return match ? `${match[0]} hPa` : 'N/A';
+      return match ? `${match[0]} hPa` : "N/A";
     }
-    
+
     // Caso 3: Se for undefined ou null
-    return 'N/A';
+    return "N/A";
   };
 
   // Função para formatar datas
   const formatDate = (dateString: string | undefined) => {
-    if (!dateString) return 'N/A';
-    
+    if (!dateString) return "N/A";
+
     try {
       // Remove "Pressure milibars:" se existir (para o caso da data)
-      const cleanString = dateString.replace('Pressure milibars:', '').trim();
+      const cleanString = dateString.replace("Pressure milibars:", "").trim();
       // Converte para formato ISO válido
-      const isoString = cleanString.replace(' ', 'T');
+      const isoString = cleanString.replace(" ", "T");
       return new Date(isoString).toLocaleString();
     } catch {
       return dateString;
@@ -56,9 +55,9 @@ export default function ForecastCard({
 
       <div className="flex flex-col items-center mb-4">
         {icon && (
-          <img 
-            src={`https:${icon}`} 
-            alt={`Condição climática: ${condition}`} 
+          <img
+            src={`https:${icon}`}
+            alt={`Condição climática: ${condition}`}
             className="w-16 h-16"
           />
         )}
@@ -68,19 +67,39 @@ export default function ForecastCard({
 
       <div className="grid grid-cols-2 gap-2 text-sm">
         <div>
-          <p><span className="font-semibold">Sensação:</span> {feelslike_c}°C</p>
+          <p>
+            <span className="font-semibold">Sensação:</span> {feelslike_c}°C
+          </p>
         </div>
         <div>
-          <p><span className="font-semibold">Umidade:</span> {humidity}%</p>
-          <p><span className="font-semibold">Vento:</span> {wind_kph} km/h</p>
-          <p><span className="font-semibold">UV:</span> {uv}</p>
+          <p>
+            <span className="font-semibold">Umidade:</span> {humidity}%
+          </p>
+          <p>
+            <span className="font-semibold">Vento:</span> {wind_kph} km/h
+          </p>
+          <p>
+            <span className="font-semibold">UV:</span> {uv}
+          </p>
         </div>
-        
+
         <div className="col-span-2">
-          <p><span className="font-semibold">Localização:</span> {city}, {region} - {country}</p>
-          <p><span className="font-semibold">Hora Local:</span> {formatDate(localtime)}</p>
-          <p><span className="font-semibold">Pressão:</span> {getPressureValue()} hPa</p>
-          <p><span className="font-semibold">Atualizado:</span> {new Date(Updated).toLocaleString()}</p>
+          <p>
+            <span className="font-semibold">Localização:</span> {city}, {region}{" "}
+            - {country}
+          </p>
+          <p>
+            <span className="font-semibold">Hora Local:</span>{" "}
+            {formatDate(localtime)}
+          </p>
+          <p>
+            <span className="font-semibold">Pressão:</span> {getPressureValue()}{" "}
+            hPa
+          </p>
+          <p>
+            <span className="font-semibold">Atualizado:</span>{" "}
+            {new Date(Updated).toLocaleString()}
+          </p>
         </div>
       </div>
     </div>

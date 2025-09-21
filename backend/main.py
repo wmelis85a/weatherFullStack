@@ -1,14 +1,16 @@
 from fastapi import FastAPI
-from app.controllers import weather
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.controllers import weather
 
 app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173",    
-                    "https://weatherfullstack-front.onrender.com"],
+    allow_origins=[
+        "http://localhost:5173",
+        "https://weatherfullstack-front.onrender.com",
+    ],
     allow_methods=["*"],
     allow_headers=["*"],
 )
