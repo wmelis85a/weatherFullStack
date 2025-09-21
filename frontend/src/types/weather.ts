@@ -1,86 +1,67 @@
-export interface DiaPrevisao {
-  feelslike_c: any;
-  wind_kph: any;
-  condition: any;
-  humidity: any;
+// src/types/weather.ts
+
+// ===================================================================
+// 1. BASE TYPE FOR THE HOME PAGE FORECAST
+// ===================================================================
+// This is the final format your Home page uses to render the cards.
+// Simplified by removing fields not relevant to this screen.
+export interface HomeForecastItem {
   dia: string;
   tempo: string;
   maxima: string;
   minima: string;
-  iuv?: string;
-  city?: string;
-  region?: string;
-  country?: string;
-  icon?: string;
-  Temperatura?: string;
-  Humidade?: string;
-  Velocidade_vento?: string;
-  Térmica?: string;
-  uv?: string;
-  atualizado: string;
-  pressao: number;
-  localTime: string;
+  iuv: string;
 }
 
-  
-  export interface Cidade {
+
+// ===================================================================
+// 2. TYPES THAT THE BACKEND ACTUALLY SENDS FOR THE HOME PAGE
+// ===================================================================
+
+// TYPE A: CPTEC Response (Nested Object)
+export interface CptecResponse {
+  cidade: {
     nome: string;
     uf: string;
     atualizacao: string;
-    previsao: DiaPrevisao[];
-  }
-  
-  export interface PrevisaoResponse {
-    cidade: Cidade;
-  }
+    previsao: HomeForecastItem[]; // Uses the base type
+  };
+}
 
- // types/weather.ts
-
-export interface DetailedWeatherData {
-    dia: string;
-    tempo: string;
-    condition: string;
-    maxima: string;
-    minima: string;
-    iuv: string;
-    city: string;
-    region: string;
-    country: string;
-    temperature_c: number; // Agora corresponde à API
-    feelslike_c: number;  // Agora corresponde à API
-    icon: string;
-    humidity: number;     // Agora corresponde à API
-    wind_kph: number;     // Agora corresponde à API
-    uv: number;
-    Updated: string;     // Agora corresponde à API
-    pressure_mb: string;
-    localtime: string;    // Agora corresponde à API
-    termica: string;
+// TYPE B: Fallback Response as an OBJECT (what we discovered in the log)
+export interface FallbackObjectResponse {
+  source: string;
+  data: {
+    location: any; // Kept as 'any' for simplicity, can be detailed later
+    current: any;  // Kept as 'any' for simplicity
+  };
 }
 
 
-  export interface ForecastCardProps {
-    dia: string;
-    tempo: string;
-    maxima: string;
-    minima: string;
-  }
+// ===================================================================
+// 3. THE FINAL UNION TYPE FOR THE HOME PAGE
+// ===================================================================
+// This is the type your `getHomeForecast` function SHOULD return.
+// It's a union of ALL possibilities:
+// It can be a CPTEC object, OR a Fallback object, OR a simple array.
+export type PrevisaoResponse = CptecResponse | FallbackObjectResponse | HomeForecastItem[];
+
+
+// ===================================================================
+// YOUR OTHER TYPES (for other pages, can remain here)
+// ===================================================================
+export interface DetailedWeatherData {
+  // ... your type ...
+}
+
+export interface ForecastCardProps {
+  // ... your type ...
+}
 
 export interface HourlyForecast {
-  time: string;
-  temp_c: number;
-  condition: string;
-  will_it_rain: 0 | 1;
-  chance_of_rain: number;
+  // ... your type ...
 }
 
 export interface WeatherData {
-    city: string;
-    region: string;
-    country: string;
-    date: string;
-    condition: string;
-    min_temp_c: number;
-    max_temp_c: number;
-    hourly: HourlyForecast[];
+  // ... your type ...
 }
