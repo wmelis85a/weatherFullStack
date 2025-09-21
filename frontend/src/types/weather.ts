@@ -1,10 +1,9 @@
 // src/types/weather.ts
 
 // ===================================================================
-// 1. BASE TYPE FOR THE HOME PAGE FORECAST
+// TYPES FOR THE HOME PAGE
 // ===================================================================
-// This is the final format your Home page uses to render the cards.
-// Simplified by removing fields not relevant to this screen.
+
 export interface HomeForecastItem {
   dia: string;
   tempo: string;
@@ -13,47 +12,80 @@ export interface HomeForecastItem {
   iuv: string;
 }
 
-// ===================================================================
-// 2. TYPES THAT THE BACKEND ACTUALLY SENDS FOR THE HOME PAGE
-// ===================================================================
-
-// TYPE A: CPTEC Response (Nested Object)
 export interface CptecResponse {
   cidade: {
     nome: string;
     uf: string;
     atualizacao: string;
-    previsao: HomeForecastItem[]; // Uses the base type
+    previsao: HomeForecastItem[];
   };
 }
 
-// TYPE B: Fallback Response as an OBJECT (what we discovered in the log)
 export interface FallbackObjectResponse {
   source: string;
   data: {
-    location: any; // Kept as 'any' for simplicity, can be detailed later
-    current: any; // Kept as 'any' for simplicity
+    location: any;
+    current: any;
   };
 }
 
-// ===================================================================
-// 3. THE FINAL UNION TYPE FOR THE HOME PAGE
-// ===================================================================
-// This is the type your `getHomeForecast` function SHOULD return.
-// It's a union of ALL possibilities:
-// It can be a CPTEC object, OR a Fallback object, OR a simple array.
-export type PrevisaoResponse =
-  | CptecResponse
-  | FallbackObjectResponse
-  | HomeForecastItem[];
+export type PrevisaoResponse = CptecResponse | FallbackObjectResponse | HomeForecastItem[];
+
 
 // ===================================================================
-// YOUR OTHER TYPES (for other pages, can remain here)
+// TYPES FOR THE "DETAILED FORECAST" PAGE
 // ===================================================================
-export type DetailedWeatherData = {};
 
-export type ForecastCardProps = {};
+export interface DetailedWeatherData {
+  dia: string;
+  condition: string;
+  temperature_c: number;
+  city: string;
+  region: string;
+  country: string;
+  icon: string;
+  uv: number;
+  humidity: number;
+  wind_kph: number;
+  pressure_mb: number;
+  localtime: string;
+  Updated: string; // Note: Property names are case-sensitive. 'Updated' with capital U.
+  feelslike_c: number;
+  termica: string;
+}
 
-export type HourlyForecast = {};
 
-export type WeatherData = {};
+// ===================================================================
+// TYPES FOR THE "EXTENDED FORECAST" PAGE
+// ===================================================================
+
+export interface HourlyForecast {
+  time: string;
+  temp_c: number;
+  condition: string;
+  will_it_rain: 0 | 1;
+  chance_of_rain: number;
+}
+
+export interface WeatherData {
+  city: string;
+  region: string;
+  country: string;
+  date: string;
+  condition: string;
+  min_temp_c: number;
+  max_temp_c: number;
+  hourly: HourlyForecast[];
+}
+
+
+// ===================================================================
+// PROP TYPES FOR COMPONENTS (if needed)
+// ===================================================================
+
+export interface ForecastCardProps {
+  dia: string;
+  tempo: string;
+  maxima: string;
+  minima: string;
+}

@@ -24,11 +24,11 @@ export default function ForecastCard({
       return `${pressure_mb} hPa`;
     }
 
-    // Caso 2: Se vier como string descritiva ("Pressure milibars: 1021")
+   /*  // Caso 2: Se vier como string descritiva ("Pressure milibars: 1021")
     if (typeof pressure_mb === "string") {
       const match = pressure_mb.match(/\d+/);
       return match ? `${match[0]} hPa` : "N/A";
-    }
+    } */
 
     // Caso 3: Se for undefined ou null
     return "N/A";
