@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { getDetailedConditions } from "../services/api";
-import { useCity } from "../contexts/CityContext";
 import ForecastCard from "../components/ForecastCardDetailed";
-import { DetailedWeatherData } from "../types/weather";
+import { useCity } from "../contexts/CityContext";
+import { getDetailedConditions } from "../services/api";
+import type { DetailedWeatherData } from "../types/weather";
 
 export default function Conditions() {
   const { city } = useCity();
@@ -28,7 +28,9 @@ export default function Conditions() {
 
   return (
     <div className="w-full">
-      <h2 className="text-2xl font-bold text-center mb-2">Detailed conditions</h2>
+      <h2 className="text-2xl font-bold text-center mb-2">
+        Detailed conditions
+      </h2>
       <div className="flex justify-center">
         <ForecastCard {...data} />
       </div>

@@ -2,7 +2,6 @@
 import { useState } from "react";
 import { useCity } from "../contexts/CityContext";
 
-
 export default function SearchBar() {
   const [query, setQuery] = useState("");
   const { setCity } = useCity();

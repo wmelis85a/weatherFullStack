@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 import SearchBar from "./SearchBar";
 
 export default function Header() {
-
   return (
     <header className="flex justify-between items-center p-4 bg-gray-800 text-white">
       <nav>

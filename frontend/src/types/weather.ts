@@ -13,7 +13,6 @@ export interface HomeForecastItem {
   iuv: string;
 }
 
-
 // ===================================================================
 // 2. TYPES THAT THE BACKEND ACTUALLY SENDS FOR THE HOME PAGE
 // ===================================================================
@@ -33,10 +32,9 @@ export interface FallbackObjectResponse {
   source: string;
   data: {
     location: any; // Kept as 'any' for simplicity, can be detailed later
-    current: any;  // Kept as 'any' for simplicity
+    current: any; // Kept as 'any' for simplicity
   };
 }
-
 
 // ===================================================================
 // 3. THE FINAL UNION TYPE FOR THE HOME PAGE
@@ -44,24 +42,18 @@ export interface FallbackObjectResponse {
 // This is the type your `getHomeForecast` function SHOULD return.
 // It's a union of ALL possibilities:
 // It can be a CPTEC object, OR a Fallback object, OR a simple array.
-export type PrevisaoResponse = CptecResponse | FallbackObjectResponse | HomeForecastItem[];
-
+export type PrevisaoResponse =
+  | CptecResponse
+  | FallbackObjectResponse
+  | HomeForecastItem[];
 
 // ===================================================================
 // YOUR OTHER TYPES (for other pages, can remain here)
 // ===================================================================
-export interface DetailedWeatherData {
-  // ... your type ...
-}
+export type DetailedWeatherData = {};
 
-export interface ForecastCardProps {
-  // ... your type ...
-}
+export type ForecastCardProps = {};
 
-export interface HourlyForecast {
-  // ... your type ...
-}
+export type HourlyForecast = {};
 
-export interface WeatherData {
-  // ... your type ...
-}
+export type WeatherData = {};
