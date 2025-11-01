@@ -4,18 +4,13 @@ import xml.etree.ElementTree as ET
 
 import httpx
 import xmltodict
-from fastapi import HTTPException
-from tenacity import retry, stop_after_attempt, wait_exponential
-
-from app.config import (
-    DETAILED_FORECAST_API,
-    HOME_FORECAST_API,
-    HOME_FORECAST_API_FALLBACK,
-    WEATHER_API_KEY,
-)
+from app.config import (DETAILED_FORECAST_API, HOME_FORECAST_API,
+                        HOME_FORECAST_API_FALLBACK, WEATHER_API_KEY)
 from app.helpers.apiParser import adapt_current_weather_for_frontend
 from app.helpers.dict import conditions_filtered, extended_conditions_filtered
 from app.helpers.translator import translate_dict_values, translation_map
+from fastapi import HTTPException
+from tenacity import retry, stop_after_attempt, wait_exponential
 
 logger = logging.getLogger("uvicorn.error")
 
@@ -90,7 +85,7 @@ async def getHomeForecast(name) -> dict:
         response.raise_for_status()
 
     # xml to dict parsing logic
-    parse_start = time.perf_counter()
+    time.perf_counter()
     xml_data = response.text
     dict = xmltodict.parse(xml_data)
     logger.debug(f"Raw xml: {xml_data}")
