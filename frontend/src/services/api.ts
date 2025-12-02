@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import axiosRetry from "axios-retry";
 import type { PrevisaoResponse, WeatherData } from "../types/weather";
 import type { DetailedWeatherData } from "../types/weather";
@@ -33,8 +33,15 @@ export async function getHomeForecast(
     const response = await api.get<PrevisaoResponse>(`${VITE_API_URL}`, {
       params: { city: query },
     });
+    
     return response.data;
   } catch (error) {
+    const axiosError = error as AxiosError;
+
+    if (axiosError.response && axiosError.response.status === 503) {
+        throw new Error("CPTEC API (Brazil Forecast data) is currently unavailable. Please try again later or search for weather data from abroad.");
+    }
+
     throw new Error("Error fetching home forecast");
   }
 }

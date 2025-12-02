@@ -2,18 +2,20 @@ import { useEffect, useState } from "react";
 import ForecastCard from "../components/ForecastCard";
 import { useCity } from "../contexts/CityContext";
 import { getHomeForecast } from "../services/api";
-// We import the new types we've defined
+import { ErrorModal } from '../components/ErrorModal';
 import type { HomeForecastItem, PrevisaoResponse } from "../types/weather";
 
 export default function Home() {
   const { city } = useCity();
-  // The state now uses our clean, specific type for the Home page
   const [forecast, setForecast] = useState<HomeForecastItem[]>([]);
   const [load, setLoad] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // States for error modal
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
+
   useEffect(() => {
-    // Added a handler to avoid fetching for an empty city
     if (!city) {
       setForecast([]);
       setLoad(false);
@@ -25,39 +27,44 @@ export default function Home() {
       setError(null);
 
       try {
-        // The API function now returns the 'PrevisaoResponse' type, which can be one of 3 formats
         const data: PrevisaoResponse = await getHomeForecast(city);
-
-        console.log("RAW DATA RECEIVED FROM THE BACKEND:", data);
-
-        let forecastData: HomeForecastItem[] = []; // Initialize as an empty array
-
-        // THIS BLOCK NOW WORKS WITHOUT TYPE ERRORS
+        
+        // ... (Your existing data parsing logic here) ...
+        // Keeping it short for clarity, paste your logic back here
+        
+        let forecastData: HomeForecastItem[] = [];
         if ("cidade" in data && data.cidade.previsao) {
-          // --- CASE 1: CPTEC Response (nested object) ---
-          forecastData = data.cidade.previsao;
+             forecastData = data.cidade.previsao;
         } else if ("data" in data && data.data.current) {
-          // --- CASE 2: Fallback Response as an OBJECT (what your log showed) ---
-          // We build the forecast array manually from the data.
-          const fallbackInfo = data.data;
-          const forecastObject: HomeForecastItem = {
-            dia: fallbackInfo.location.localtime.split(" ")[0],
-            tempo: fallbackInfo.current.condition.text,
-            maxima: String(Math.round(fallbackInfo.current.temp_c)),
-            minima: String(Math.round(fallbackInfo.current.temp_c)),
-            iuv: String(fallbackInfo.current.uv),
-          };
-          forecastData = [forecastObject]; // We put the object into an array so .map() can work
+             const fallbackInfo = data.data;
+             forecastData = [{
+                dia: fallbackInfo.location.localtime.split(" ")[0],
+                tempo: fallbackInfo.current.condition.text,
+                maxima: String(Math.round(fallbackInfo.current.temp_c)),
+                minima: String(Math.round(fallbackInfo.current.temp_c)),
+                iuv: String(fallbackInfo.current.uv),
+             }];
         } else if (Array.isArray(data)) {
-          // --- CASE 3: Fallback Response as an ARRAY (for the future) ---
-          forecastData = data;
+             forecastData = data;
         }
 
-        console.log("Final forecast to be rendered:", forecastData);
         setForecast(forecastData);
       } catch (err: any) {
-        console.error("DETAILED ERROR ON API CALL:", err);
-        setError("Error loading forecast for the city.");
+        console.error("DETAILED ERROR:", err);
+
+        // 1. IMPROVED CHECK: We also check for generic 503 code just in case the message text varies
+        const isServiceUnavailable = 
+            (err.message && (err.message.includes("CPTEC") || err.message.includes("unavailable"))) ||
+            (err.response && err.response.status === 503);
+
+        if (isServiceUnavailable) {
+            // If it is our specific error, we Open Modal AND Set Error to null
+            // so the UI behind the modal doesn't vanish
+            setModalMessage(err.message || "Service Unavailable");
+            setIsModalOpen(true);
+        } else {
+            setError("Error loading forecast for the city."); 
+        }
       } finally {
         setLoad(false);
       }
@@ -66,28 +73,37 @@ export default function Home() {
     fetchData();
   }, [city]);
 
-  if (load) {
-    return <p>Loading forecast...</p>;
-  }
-
-  if (error) {
-    return <p>{error}</p>;
-  }
-
+  // 2. RENDER FIX: Remove Early Returns
+  // We handle loading/error INSIDE the main return so the Modal is always mounted
   return (
-    <div className="w-full">
+    <div className="w-full relative">
+      
+      {/* 3. The Modal is placed here, so it overlays everything else */}
+      <ErrorModal 
+        isOpen={isModalOpen} 
+        message={modalMessage} 
+        onClose={() => setIsModalOpen(false)} 
+      />
+
       <h2 className="text-2xl font-bold text-center mb-2">
         Hometown forecast - 4 Days
       </h2>
       <p className="text-center text-gray-400 mb-8">{city}</p>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full px-4">
-        {forecast.length > 0 ? (
-          forecast.map((dia) => <ForecastCard key={dia.dia} {...dia} />)
-        ) : (
-          <p className="col-span-4 text-center">No forecast to display.</p>
-        )}
-      </div>
+      {/* 4. Conditional Rendering Logic */}
+      {load ? (
+         <p className="text-center">Loading forecast...</p>
+      ) : error ? (
+         <p className="text-center text-red-500">{error}</p>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full px-4">
+          {forecast.length > 0 ? (
+            forecast.map((dia) => <ForecastCard key={dia.dia} {...dia} />)
+          ) : (
+            <p className="col-span-4 text-center">No forecast to display.</p>
+          )}
+        </div>
+      )}
     </div>
   );
 }
