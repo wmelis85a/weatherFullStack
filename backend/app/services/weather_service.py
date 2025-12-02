@@ -2,15 +2,21 @@ import logging
 import time
 import xml.etree.ElementTree as ET
 
+from fastapi.responses import JSONResponse
 import httpx
 import xmltodict
-from app.config import (DETAILED_FORECAST_API, HOME_FORECAST_API,
-                        HOME_FORECAST_API_FALLBACK, WEATHER_API_KEY)
+from fastapi import HTTPException
+from tenacity import retry, stop_after_attempt, wait_exponential
+
+from app.config import (
+    DETAILED_FORECAST_API,
+    HOME_FORECAST_API,
+    HOME_FORECAST_API_FALLBACK,
+    WEATHER_API_KEY,
+)
 from app.helpers.apiParser import adapt_current_weather_for_frontend
 from app.helpers.dict import conditions_filtered, extended_conditions_filtered
 from app.helpers.translator import translate_dict_values, translation_map
-from fastapi import HTTPException
-from tenacity import retry, stop_after_attempt, wait_exponential
 
 logger = logging.getLogger("uvicorn.error")
 
@@ -28,7 +34,19 @@ async def getHomeForecast(name) -> dict:
 
     async with httpx.AsyncClient() as client:
         response = await client.get(cityNameUrl)
-        response.raise_for_status()
+
+        try:
+            response.raise_for_status()
+
+            data = response.text 
+            return {"status": "success", "data": data}
+        except httpx.HTTPStatusError as exc:
+            status = exc.response.status_code
+
+            return JSONResponse(
+            content={"error": "upstream_error", "message": "CPTEC API is unreachable."}, 
+            status_code=status
+            )
 
     xml_data = response.text
 
@@ -85,7 +103,7 @@ async def getHomeForecast(name) -> dict:
         response.raise_for_status()
 
     # xml to dict parsing logic
-    time.perf_counter()
+    parse_start = time.perf_counter()
     xml_data = response.text
     dict = xmltodict.parse(xml_data)
     logger.debug(f"Raw xml: {xml_data}")
