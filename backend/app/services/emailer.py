@@ -1,18 +1,25 @@
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from typing import Optional
 
 from aiosmtplib import SMTP
-from app.config import (SENDER_EMAIL, SMTP_PASSWORD, SMTP_PORT, SMTP_SERVER,
-                        SMTP_USERNAME)
 from fastapi import HTTPException
 from pydantic import BaseModel, EmailStr
+
+from app.config import (
+    SENDER_EMAIL,
+    SMTP_PASSWORD,
+    SMTP_PORT,
+    SMTP_SERVER,
+    SMTP_USERNAME,
+)
 
 
 class EmailRequest(BaseModel):
     to: EmailStr
     subject: str
     body: str
-    html: str | None = None
+    html: Optional[str] = None
 
 
 async def sendEmail(emailRequest):
