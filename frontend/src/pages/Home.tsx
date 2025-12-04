@@ -3,7 +3,7 @@ import ForecastCard from "../components/ForecastCard";
 import { useCity } from "../contexts/CityContext";
 import { getHomeForecast } from "../services/api";
 import { ErrorModal } from '../components/ErrorModal';
-import type { HomeForecastItem, PrevisaoResponse } from "../types/weather";
+import type { HomeForecastItem } from "../types/weather";
 
 export default function Home() {
   const { city } = useCity();
