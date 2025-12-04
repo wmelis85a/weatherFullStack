@@ -1,3 +1,4 @@
+import asyncio
 import logging
 import time
 import xml.etree.ElementTree as ET
@@ -17,6 +18,7 @@ from app.config import (
 from app.helpers.apiParser import adapt_current_weather_for_frontend
 from app.helpers.dict import conditions_filtered, extended_conditions_filtered
 from app.helpers.translator import translate_dict_values, translation_map
+from app.helpers.apiRouter import api_router, fetch_city_codes, get_weather_url
 
 logger = logging.getLogger("uvicorn.error")
 
@@ -29,11 +31,10 @@ logger = logging.getLogger("uvicorn.error")
 async def getHomeForecast(name) -> dict:
     total_start = time.perf_counter()
 
-    # gets the city code from CPTEC api
-    cityNameUrl = f"http://servicos.cptec.inpe.br/XML/listaCidades?city={name}"
+    api_router = await get_weather_url(name)
 
     async with httpx.AsyncClient() as client:
-        response = await client.get(cityNameUrl)
+        response = await client.get(api_router)
 
         try:
             response.raise_for_status()
@@ -42,6 +43,8 @@ async def getHomeForecast(name) -> dict:
             return {"status": "success", "data": data}
         except httpx.HTTPStatusError as exc:
             status = exc.response.status_code
+
+
 
             return JSONResponse(
             content={"error": "upstream_error", "message": "CPTEC API is unreachable."}, 
