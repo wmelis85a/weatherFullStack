@@ -72,7 +72,7 @@ const ForecastCardExtended: React.FC<ForecastCardExtendedProps> = ({
           {weatherData.city}, {weatherData.region}
         </h2>
         <p className="text-lg text-gray-600 mb-4 text-center">
-          Data: {new Date(weatherData.date).toLocaleDateString("pt-BR")}
+          Data: {new Date().toLocaleDateString("pt-BR")}
         </p>
 
         <p className="text-2xl font-semibold text-center mb-4">
