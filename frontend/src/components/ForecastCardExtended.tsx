@@ -64,8 +64,6 @@ const ForecastCardExtended: React.FC<ForecastCardExtendedProps> = ({
     return null;
   }
 
-   console.log(weatherData.date, new Date(weatherData.date), new Date(weatherData.date).toString())
-
   return (
     <div className="max-w-4xl mx-auto p-6 font-sans">
       {/* Card Principal de Resumo Diário */}
