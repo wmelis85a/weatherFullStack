@@ -14,8 +14,9 @@ from app.config import (
     HOME_FORECAST_API,
     HOME_FORECAST_API_FALLBACK,
     WEATHER_API_KEY,
+    FEATURE_FLAG_DISABLE_CPTEC,
 )
-from app.helpers.apiParser import adapt_current_weather_for_frontend
+from app.helpers.apiParser import adapt_current_weather_for_frontend , adapt_current_weather_for_frontend_outage
 from app.helpers.dict import conditions_filtered, extended_conditions_filtered
 from app.helpers.translator import translate_dict_values, translation_map
 from app.helpers.apiRouter import api_router, fetch_city_codes, get_weather_url
@@ -34,6 +35,27 @@ async def getHomeForecast(name) -> dict:
     api_router = await get_weather_url(name)
 
     async with httpx.AsyncClient() as client:
+        if FEATURE_FLAG_DISABLE_CPTEC == "true":
+            logger.info("CPTEC API calls are disabled via feature flag. Using fallback...")
+            url = f"{DETAILED_FORECAST_API}/forecast.json?key={WEATHER_API_KEY}&q={name}&days=4&lang=pt"
+            async with httpx.AsyncClient() as client:
+                response = await client.get(url)
+                logger.debug(f"fallback object {response.text}...")
+                request_duration = time.perf_counter() - total_start
+                response.raise_for_status()
+
+                response_data = response.json()
+
+                if "error" in response_data:
+                    error_message = response_data["error"]["message"]
+                    logger.error(
+                        f"WeatherAPI fallback failed for city '{name}': {error_message}"
+                    )
+                    raise HTTPException(status_code=404, detail=f"City '{name}' not found.")
+
+                parsed_weather = adapt_current_weather_for_frontend_outage(response_data)
+                return parsed_weather
+
         response = await client.get(api_router)
 
         try:

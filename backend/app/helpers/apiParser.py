@@ -33,3 +33,26 @@ def adapt_current_weather_for_frontend(api_response):
     }
 
     return [adapted_forecast]
+
+def adapt_current_weather_for_frontend_outage(api_response):
+    location = api_response["location"]
+    forecastday = api_response["forecast"]["forecastday"][:4]  # Get first 4 days
+    
+    cptec_outage_forecast = []
+    
+    for day in forecastday:
+        condition = day["day"]["condition"]["text"]
+        max_c = day["day"]["maxtemp_c"]
+        min_c = day["day"]["mintemp_c"]
+        
+        forecast_item = {
+            "dia": day["date"],  # or use location["localtime"].split(" ")[0]
+            "tempo": condition,
+            "maxima": str(round(max_c)),
+            "minima": str(round(min_c)),
+            "iuv": "N/A",
+        }
+        cptec_outage_forecast.append(forecast_item)
+    
+    return cptec_outage_forecast
+
