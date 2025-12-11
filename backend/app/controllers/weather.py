@@ -26,6 +26,7 @@ async def get_forecast(city: str = Query(..., description="CPTEC city name")):
     logger.info("Fetching home forecast info ")
     try:
         normalizedName = normalize_city_name(city)
+        print(normalizedName)
         data = await getHomeForecast(normalizedName)
         return data
     except Exception as e:
