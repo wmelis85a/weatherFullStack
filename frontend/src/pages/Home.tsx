@@ -34,8 +34,13 @@ export default function Home() {
 
         let forecastData: HomeForecastItem[] = [];
 
-        // 1. CPTEC Scenario (Standard Object)
-        if (data && "cidade" in data && data.cidade.previsao) {
+        // 0. Direct CPTEC Response (root object with previsao array)
+        if (data && "previsao" in data && Array.isArray(data.previsao)) {
+             forecastData = data.previsao;
+        }
+        
+        // 1. CPTEC Scenario (Standard Object with cidade)
+        else if (data && "cidade" in data && data.cidade.previsao) {
              forecastData = Array.isArray(data.cidade.previsao) 
                 ? data.cidade.previsao 
                 : [data.cidade.previsao];
