@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.controllers import weather
+from app.controllers import weather, alerts_controller
 
 app = FastAPI()
 
@@ -16,3 +16,4 @@ app.add_middleware(
 )
 
 app.include_router(weather.router)
+app.include_router(alerts_controller.router)
