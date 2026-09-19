@@ -1,7 +1,7 @@
 
 # 🌤️ Weather Forecast App
 
-A full-stack weather forecast application that fetches and displays weather data using a React frontend and a FastAPI backend. Powered by Python async logic, multiple weather APIs, and a touch of AI-assisted development.
+A full-stack weather forecast application that fetches and displays weather data using a React frontend and a FastAPI backend. Powered by Python async logic, multiple weather APIs, and a touch of AI-assisted development
 
 ---
 

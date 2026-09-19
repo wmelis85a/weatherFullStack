@@ -30,7 +30,7 @@ async def get_forecast(city: str = Query(..., description="CPTEC city name")):
         data = await getHomeForecast(normalizedName)
         return data
     except Exception as e:
-        logger.error("Unable to reach for INPE api", e)
+        logger.error(f"Unable to reach for INPE api: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 

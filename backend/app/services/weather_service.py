@@ -33,9 +33,6 @@ async def getHomeForecast(name) -> dict:
     total_start = time.perf_counter()
     print("Getting weather for:", name)
 
-    api_router = await get_weather_url(name)
-    print("API URL:", api_router)
-
     # Feature flag check for fallback
     if FEATURE_FLAG_DISABLE_CPTEC == "true":
         logger.info("CPTEC API calls are disabled via feature flag. Using fallback...")
@@ -57,6 +54,9 @@ async def getHomeForecast(name) -> dict:
 
             parsed_weather = adapt_current_weather_for_frontend_outage(response_data)
             return parsed_weather
+
+            api_router = await get_weather_url(name)
+            print("API URL:", api_router)
 
     # Main CPTEC flow
     async with httpx.AsyncClient() as client:

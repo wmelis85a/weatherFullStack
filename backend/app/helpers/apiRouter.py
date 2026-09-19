@@ -67,9 +67,13 @@ async def api_router(check_city) -> str:
         print(f"Brazilian city detected: {check_city['name']}. Using CPTEC.")
         
         safe_name = quote(check_city['name'])
-        citycode_url = f"http://servicos.cptec.inpe.br/XML/listaCidades?city={normalize_city_name(check_city['name'])}"
+
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+        }
+        citycode_url = f"https://servicos.cptec.inpe.br/XML/listaCidades?city={normalize_city_name(check_city['name'])}"
         
-        async with httpx.AsyncClient() as client:
+        async with httpx.AsyncClient(headers=headers) as client:
             response = await client.get(citycode_url)
             response.raise_for_status()
             xml_data = response.text
